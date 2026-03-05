@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean View Resort | Reservation System</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2983/2983067.png">
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <video autoplay muted loop playsinline class="hero-img" style="filter: brightness(0.4);">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-resort-with-palms-and-a-pool-34444-large.mp4" type="video/mp4">
+        </video>
+        <div class="login-card">
+            <h2>Ocean View</h2>
+            <p>Enter credentials to access the resort dashboard</p>
+            <form id="login-form">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+            <div id="login-error" style="color: var(--error); margin-top: 1rem; font-size: 0.875rem; display: none;">Invalid username or password</div>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-main" style="display: none;">
+        <!-- Sidebar -->
+        <aside>
+            <div class="logo">
+                <div class="avatar"></div>
+                <span>Ocean View</span>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active" data-view="dashboard">
+                    <span>🏠</span> Dashboard
+                </li>
+                <li class="nav-item" data-view="reservations">
+                    <span>📅</span> Add Reservation
+                </li>
+                <li class="nav-item" data-view="records">
+                    <span>📋</span> Booking Records
+                </li>
+                <li class="nav-item" data-view="billing">
+                    <span>💰</span> Generate Bill
+                </li>
+                <li class="nav-item" data-view="reports">
+                    <span>📊</span> Analysis & Reports
+                </li>
+                <li class="nav-item" data-view="help">
+                    <span>❓</span> Help Center
+                </li>
+            </ul>
+            <div style="margin-top: auto;">
+                <li class="nav-item" id="logout-btn">
+                    <span>🚪</span> Exit System
+                </li>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main>
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="view-title">Dashboard Overview</h1>
+                    <p style="color: var(--text-dim);">Welcome back, <span id="user-display">Staff Member</span></p>
+                </div>
+                <div class="user-profile">
+                    <div style="text-align: right;">
+                        <p style="font-size: 0.875rem; font-weight: 600;">Galle, Sri Lanka</p>
+                        <p style="font-size: 0.75rem; color: var(--text-dim);" id="current-time">March 06, 2026</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view-section active">
+                <div class="card-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Bookings</span>
+                        <div class="stat-value" id="total-bookings-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Rooms Occupied</span>
+                        <div class="stat-value" id="occupied-rooms-count">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Expected Revenue</span>
+                        <div class="stat-value" id="revenue-estimate">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Active Guests</span>
+                        <div class="stat-value" id="active-guests-count">0</div>
+                    </div>
+                </div>
+
+                <h3>Recent Activity</h3>
+                <div class="table-container" style="margin-top: 1.5rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th># ID</th>
+                                <th>Guest Name</th>
+                                <th>Room Type</th>
+                                <th>Check-in</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-bookings-list">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Add Reservation View -->
+            <section id="reservations" class="view-section">
+                <div class="form-card">
+                    <h2 style="margin-bottom: 2rem;">Create New Reservation</h2>
+                    <form id="reservation-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Guest Full Name</label>
+                                <input type="text" id="guest_name" required placeholder="e.g. John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" id="contact_number" required placeholder="+94 77 XXX XXXX">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Address</label>
+                                <input type="text" id="address" required placeholder="Permanent address of guest">
+                            </div>
+                            <div class="form-group">
+                                <label>Room Category</label>
+                                <select id="room_type" required>
+                                    <option value="Standard">Standard ($50/night)</option>
+                                    <option value="Deluxe">Deluxe ($80/night)</option>
+                                    <option value="Suite">Suite ($120/night)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Resort Area</label>
+                                <input type="text" value="Ocean Front Wing" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Check-in Date</label>
+                                <input type="date" id="check_in" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Check-out Date</label>
+                                <input type="date" id="check_out" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 2rem; width: 100%;">Confirm Booking</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Booking Records View -->
+            <section id="records" class="view-section">
+                <div class="header" style="margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <input type="text" id="search-bookings" placeholder="Search by Res # or Name..." style="width: 300px;">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Res #</th>
+                                <th>Name</th>
+                                <th>Room</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Amount Paid</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-bookings-list">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Billing View -->
+            <section id="billing" class="view-section">
+                <div class="card-grid">
+                    <div class="form-card" style="grid-column: span 2;">
+                        <h3>Generate Bill / Invoice</h3>
+                        <div class="form-group" style="margin: 1.5rem 0;">
+                            <label>Search Reservation Number</label>
+                            <input type="text" id="calc-res-id" placeholder="Enter ID (e.g. RES-1001)">
+                            <button class="btn-primary" id="search-bill-btn" style="margin-top: 1rem;">Retrieve & Calculate</button>
+                        </div>
+
+                        <div id="bill-details" style="display: none; border-top: 1px solid var(--card-border); padding-top: 2rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                                <div>
+                                    <h4 id="bill-guest-name">GUEST_NAME</h4>
+                                    <p id="bill-res-id" style="color: var(--text-dim);">RES_ID</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p id="bill-date">DATE</p>
+                                    <p id="bill-room-info">ROOM_TYPE</p>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.1); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Stay Duration:</span>
+                                    <span id="bill-nights">X nights</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Rate Per Night:</span>
+                                    <span id="bill-rate">$0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-weight: 700; font-size: 1.25rem;">
+                                    <span>Total Payable:</span>
+                                    <span id="bill-total" class="text-primary">$0</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="window.print()">Print Invoice</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports View -->
+            <section id="reports" class="view-section">
+                <div class="card-grid">
+                    <div class="stat-card">
+                        <h4>Revenue Summary</h4>
+                        <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; margin-top: 1rem;">
+                            <!-- Simple visual bar chart -->
+                            <div style="flex:1; background: var(--primary); height: 40%; border-radius: 4px;"></div>
+                            <div style="flex:1; background: var(--primary); height: 60%; border-radius: 4px;"></div>
+                            <div style="flex:1; background: var(--primary); height: 90%; border-radius: 4px;"></div>
+                            <div style="flex:1; background: var(--accent); height: 75%; border-radius: 4px;"></div>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem;">Monthly revenue growth vs last year</p>
+                    </div>
+                    <div class="stat-card" style="grid-column: span 2;">
+                        <h4>Room Occupancy by Type</h4>
+                        <div id="occupancy-report" style="margin-top: 1rem;">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label>Standard Rooms (Total: 50)</label>
+                                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                                    <div id="progress-standard" style="width: 30%; height: 100%; background: var(--primary);"></div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label>Deluxe Rooms (Total: 30)</label>
+                                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                                    <div id="progress-deluxe" style="width: 50%; height: 100%; background: var(--accent);"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Luxury Suites (Total: 10)</label>
+                                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                                    <div id="progress-suite" style="width: 80%; height: 100%; background: #f59e0b;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Help View -->
+            <section id="help" class="view-section">
+                <div class="form-card">
+                    <h3>Help & Documentation</h3>
+                    <div style="margin-top: 1.5rem;">
+                        <details style="margin-bottom: 1rem; cursor: pointer;">
+                            <summary style="font-weight: 600; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">How to add a new reservation?</summary>
+                            <p style="padding: 1rem; color: var(--text-dim);">Navigate to 'Add Reservation' in the sidebar, fill in guest details, select room type and dates, then click 'Confirm Booking'. Reservation ID will be generated automatically.</p>
+                        </details>
+                        <details style="margin-bottom: 1rem; cursor: pointer;">
+                            <summary style="font-weight: 600; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">How is the bill calculated?</summary>
+                            <p style="padding: 1rem; color: var(--text-dim);">Bill = (Check-out Date - Check-in Date) x Price Per Night. Price: Standard ($50), Deluxe ($80), Suite ($120).</p>
+                        </details>
+                        <details style="margin-bottom: 1rem; cursor: pointer;">
+                            <summary style="font-weight: 600; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">Retrieving booking records?</summary>
+                            <p style="padding: 1rem; color: var(--text-dim);">Use the 'Booking Records' page to list all guests or search by Reservation ID to find a specific entry.</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
