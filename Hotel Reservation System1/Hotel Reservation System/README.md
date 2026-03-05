@@ -306,4 +306,5 @@ This project uses Git version control for managing source code changes.
 
 Repository Link:
 
-https://github.com/yourusername/oceanview-reservation-system
+
+https://github.com/kujilinip100-hub/OceanViewResort.git
